@@ -88,16 +88,9 @@ def simulate(
         xcurrent = np.concatenate((x0.T, np.zeros((nx-model_params.nx_original))))
         X_sim[0, :] = xcurrent
         time_prep = 0.0
-        if controller_setting["algorithm"] in ["RTI", "AS-RTI-py"]:
+        if controller_setting["algorithm"] in ["RTI", "AS-RTI-A", "AS-RTI-B", "AS-RTI-C", "AS-RTI-D"]:
             # first preparation phase
             controller.options_set("rti_phase", 1)
-            status = controller.solve()
-            time_prep = controller.get_stats("time_tot")
-            if controller_setting["algorithm"] == "AS-RTI-py":
-                controller.store_iterate('as_rti_iter.json', overwrite=True)
-        elif controller_setting["algorithm"] in ["AS-RTI-A", "AS-RTI-B", "AS-RTI-C", "AS-RTI-D"]:
-            # first preparation phase
-            controller.options_set("rti_phase", 3)
             status = controller.solve()
             time_prep = controller.get_stats("time_tot")
 
@@ -179,10 +172,7 @@ def simulate(
 
             # preparation step
             if controller_setting["algorithm"] in ["RTI", "AS-RTI-A", "AS-RTI-B", "AS-RTI-C", "AS-RTI-D"]:
-                if controller_setting["algorithm"] == "RTI":
-                    controller.options_set("rti_phase", 1)
-                elif controller_setting["algorithm"].startswith("AS-RTI"):
-                    controller.options_set("rti_phase", 3)
+                controller.options_set("rti_phase", 1)
                 status = controller.solve()
                 time_prep = controller.get_stats("time_tot")
                 if status not in [0, 2]:
@@ -241,13 +231,9 @@ def simulate_with_residuals(
     # closed loop
     xcurrent = np.concatenate((x0.T, np.zeros((nx-model_params.nx_original))))
     X_sim[0, :] = xcurrent
-    if controller_setting["algorithm"] == "RTI":
+    if controller_setting["algorithm"] in ["RTI", "AS-RTI-A", "AS-RTI-B", "AS-RTI-C", "AS-RTI-D"]:
         # first preparation phase
         controller.options_set("rti_phase", 1)
-        status = controller.solve()
-    elif controller_setting["algorithm"] in ["AS-RTI-A", "AS-RTI-B", "AS-RTI-C", "AS-RTI-D"]:
-        # first preparation phase
-        controller.options_set("rti_phase", 3)
         status = controller.solve()
 
     for i in range(Nsim):
@@ -304,10 +290,7 @@ def simulate_with_residuals(
 
         # preparation step
         if controller_setting["algorithm"] in ["RTI", "AS-RTI-A", "AS-RTI-B", "AS-RTI-C", "AS-RTI-D"]:
-            if controller_setting["algorithm"] == "RTI":
-                controller.options_set("rti_phase", 1)
-            elif controller_setting["algorithm"].startswith("AS-RTI"):
-                controller.options_set("rti_phase", 3)
+            controller.options_set("rti_phase", 1)
             status = controller.solve()
             if status not in [0, 2]:
                 raise Exception(f"controller returned status {status} in preparation phase step {i}")
