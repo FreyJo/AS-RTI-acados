@@ -207,7 +207,8 @@ def setup_acados_ocp_solver(
     ocp = setup_acados_ocp_without_options(model, model_params, mpc_params)
 
     # set options
-    ocp.solver_options.qp_solver = "FULL_CONDENSING_QPOASES"
+    # ocp.solver_options.qp_solver = "FULL_CONDENSING_QPOASES"
+    ocp.solver_options.qp_solver = "FULL_CONDENSING_DAQP"
     # ocp.solver_options.qp_solver = "PARTIAL_CONDENSING_HPIPM"
     ocp.solver_options.qp_solver_cond_N = mpc_params.N  # for partial condensing
 
