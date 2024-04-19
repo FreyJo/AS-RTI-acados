@@ -336,7 +336,7 @@ def plot_residuals(settings, labels, i_start=0, i_end=-1, fig_filename=None):
                         #    bbox_to_anchor=(0.45, -1.),
                            ncol=3)
 
-    axs[0].set_xlim([i_start, i_start+n_time_steps-2])
+    axs[0].set_xlim([i_start, i_start+n_time_steps])
     from matplotlib.ticker import MaxNLocator
     axs[1].xaxis.set_major_locator(MaxNLocator(integer=True))
     axs[1].grid()
@@ -372,4 +372,4 @@ if __name__ == "__main__":
     #                 bbox_to_anchor=(0.5, -0.85),
     #             )
 
-    plot_residuals(SETTINGS, LABELS, 4, 12, fig_filename="as_rti_inner_residuals.pdf")
+    plot_residuals(SETTINGS, LABELS, 4, 10, fig_filename="as_rti_inner_residuals.pdf")
