@@ -284,7 +284,7 @@ def plot_simple_pareto(
     legend_elements = []
     if color_legend is not None:
         legend_elements += [
-            Line2D([0], [0], color=color, lw=4, label=f"{key}")
+            Line2D([0], [0], color=color, lw=3, label=f"{key}")
             for key, color in color_legend.items()
         ]
     if marker_legend is not None:
@@ -294,7 +294,7 @@ def plot_simple_pareto(
         ]
     if alpha_legend is not None:
         legend_elements += [
-            Line2D([0], [0], marker="o", color="C0", alpha=alpha, lw=0, label=f"{key}")
+            Line2D([0], [0], marker="o", color="black", alpha=alpha, lw=0, label=f"{key}")
             for key, alpha in alpha_legend.items()
         ]
 
@@ -349,7 +349,7 @@ def plot_simple_pareto(
     plt.grid()
     if ncol_legend is None:
         ncol_legend = 1
-    plt.legend(handles=legend_elements, ncol=ncol_legend, bbox_to_anchor=bbox_to_anchor)
+    plt.legend(handles=legend_elements, ncol=ncol_legend, bbox_to_anchor=bbox_to_anchor, columnspacing=0.5, handletextpad=0.4, handlelength=1.5)
     plt.tight_layout()
 
     if title is not None:

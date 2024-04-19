@@ -223,7 +223,7 @@ def plot_trajectories(settings, labels=None, ncol_legend=1, title=None, bbox_to_
         labels_all.append(latex_label)
 
 
-    x_lables_list = ["$p$ [m]", r"$\theta$ [rad/s]", "$s$ [m/s]", r"$\dot{\theta}$", r"cost state"]
+    x_lables_list = ["$p$ [m]", r"$\theta$ [rad]", "$s$ [m/s]", r"$\dot{\theta}$", r"cost state"]
     u_lables_list = ["$u$ [N]"]
 
     if title is None:
@@ -254,12 +254,12 @@ def plot_residuals(settings, labels, i_start=0, i_end=-1, fig_filename=None):
     from matplotlib import pyplot as plt
     from acados_template import latexify_plot
     latexify_plot()
-    fig, axs = plt.subplots(2, 1, figsize=(7.2, 5.0), sharex=True)
+    fig, axs = plt.subplots(2, 1, figsize=(7.5, 4.0), sharex=True)
     axs[0].set_yscale('log')
     axs[1].set_yscale('log')
 
     markers = ['o', 's', 'd', '^', 'v', '<', '>', 'p', 'h', 'D', 'P', '*', 'X']
-    marker_sizes = [4, 3, 4, 4, 4, 8, 8, 5, 5]
+    marker_sizes = [4, 3, 4, 4, 3, 8, 8, 5, 5]
     for i_setting, (setting, plot_label, marker, marker_size) in enumerate(zip(settings, labels, markers, marker_sizes)):
         label = get_label_from_setting(setting)
         results_filename = get_results_filename(label, dummy_model.name, DT_PLANT, True, "residual")
@@ -312,7 +312,7 @@ def plot_residuals(settings, labels, i_start=0, i_end=-1, fig_filename=None):
                     markersize=8,
                     markeredgewidth=2,
                     fillstyle='full',
-                    color='C0',
+                    color='k',
                     lw=0,
                     label='inner iterations',
                 ),
@@ -324,15 +324,15 @@ def plot_residuals(settings, labels, i_start=0, i_end=-1, fig_filename=None):
                     markersize=8,
                     markeredgewidth=2,
                     fillstyle='full',
-                    color='C0',
+                    color='k',
                     lw=0,
                     label='feedback',
                 ),
     ]
     legend = axs[1].legend(handles=l_handles + custom_handles, loc="lower center",
-                           bbox_to_anchor=(0.66, -0.03),
-                           columnspacing=0.3,
-                           handletextpad=0.2,
+                           bbox_to_anchor=(0.66, -0.05),
+                           columnspacing=0.2,
+                           handletextpad=0.1,
                         #    bbox_to_anchor=(0.45, -1.),
                            ncol=3)
 
@@ -354,10 +354,10 @@ def plot_residuals(settings, labels, i_start=0, i_end=-1, fig_filename=None):
 if __name__ == "__main__":
 
     SETTING_LABEL_PAIRS = [
-        (AS_RTI_D10_SETTING, "AS-RTI-D-10"),
-        (AS_RTI_C10_SETTING, 'AS-RTI-C-10'),
-        (AS_RTI_B10_SETTING, "AS-RTI-B-10"),
         (AS_RTI_A_SETTING, "AS-RTI-A"),
+        (AS_RTI_B10_SETTING, "AS-RTI-B-10"),
+        (AS_RTI_C10_SETTING, 'AS-RTI-C-10'),
+        (AS_RTI_D10_SETTING, "AS-RTI-D-10"),
         (RTI_SETTING, "RTI"),
         ]
     SETTINGS = [setting for setting, label in SETTING_LABEL_PAIRS]
@@ -365,11 +365,12 @@ if __name__ == "__main__":
 
     run_residual_experiment(SETTINGS)
 
-    # plot_trajectories(SETTINGS,
-    #                 labels = LABELS,
-    #                 ncol_legend=3,
-    #                 title="",
-    #                 bbox_to_anchor=(0.5, -0.85),
-    #             )
+    plot_trajectories(SETTINGS,
+                    labels = LABELS,
+                    ncol_legend=3,
+                    title="",
+                    bbox_to_anchor=(0.5, -0.85),
+                    fig_filename="as_rti_traj_residual_experiment.pdf"
+                )
 
     plot_residuals(SETTINGS, LABELS, 4, 10, fig_filename="as_rti_inner_residuals.pdf")

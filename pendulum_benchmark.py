@@ -299,7 +299,7 @@ def plot_trajectories(settings, labels=None, ncol_legend=1, title=None, bbox_to_
         time_per_iter = 1e3 * np.sum(results['timings']) / np.sum(results['nlp_iter'])
         print(f"Simulation {latex_label}\n\tCPU time: {time_per_iter:.2} ms/iter min {cpu_min:.3} ms, max {cpu_max:.3} ms , closed loop cost: {closed_loop_cost:.5e}")
 
-    x_lables_list = ["$p$ [m]", r"$\theta$ [rad/s]", "$s$ [m/s]", r"$\dot{\theta}$", r"cost state"]
+    x_lables_list = ["$p$ [m]", r"$\theta$ [rad]", "$s$ [m/s]", r"$\dot{\theta}$", r"cost state"]
     u_lables_list = ["$u$ [N]"]
 
     if title is None:
@@ -459,10 +459,11 @@ def create_table_as_rti_paper(settings, labels=None, with_reference=True):
         f.write(r"\centering" + "\n")
         f.write(r"\caption{Timings, relative suboptimality, stationarity residual and constraint violation for different controllers. \label{tab:asrti_experiment}}" + "\n")
         f.write(r"\vspace{-.2cm}")
+        f.write(r"{\footnotesize" + "\n")
         f.write(r"\begin{tabular}{l" + n_metrics*"r" + r"}" + "\n")
         f.write(r"\toprule" + "\n")
         f.write(r"& \multicolumn{2}{c}{max. timings [ms]} & rel. sub- & \multicolumn{2}{c}{mean}\\" + "\n")
-        f.write(r"algorithm & prep & feedback & ")
+        f.write(r"algorithm & preparation & feedback & ")
         if with_n_fails:
             f.write(r"$n\ind{fails}$ &")
         f.write(r" opt. [\%] & $10^3 \norm{g} $ & $\nabla_w\mathcal{L}$ \\ \midrule" + "\n")
@@ -493,9 +494,9 @@ def create_table_as_rti_paper(settings, labels=None, with_reference=True):
 
             time_feedback = 1e3 * np.max(results['timings_feedback'])
             if time_feedback > 1.2 * min_time_feedback:
-                line_string += f"{time_feedback:.2f} &"
+                line_string += f"{time_feedback:.3f} &"
             else:
-                line_string += r"\textbf{" + f"{time_feedback:.2f}" + r"} &"
+                line_string += r"\textbf{" + f"{time_feedback:.3f}" + r"} &"
 
             if with_n_fails:
                 line_string += f"{results['n_fails']} &"
@@ -514,7 +515,7 @@ def create_table_as_rti_paper(settings, labels=None, with_reference=True):
 
             res_stat = np.mean(results['res_stat'])
             line_string += get_table_tex_string_from_float(res_stat)
-            line_string += " &"
+            line_string += ""
 
             line_string += r"\\"
             # if i_setting > 0 and ((i_setting+1) % 3) == 0:
@@ -526,6 +527,7 @@ def create_table_as_rti_paper(settings, labels=None, with_reference=True):
         f.write(r"\bottomrule" + "\n")
         f.write(r"\end{tabular}" + "\n")
         f.write(r"\vspace{-.2cm}")
+        f.write(r"}" + "\n")
         f.write(r"\end{table}" + "\n")
     # print table to terminal
     with open(table_filename, 'r') as f:
@@ -591,9 +593,7 @@ def pareto_plot_comparison(settings, with_reference=True, fig_filename='pendulum
         else:
             print(f"skipping setting {setting=}")
 
-
     min_total_cost = min(result["total_cost"] for result in res_list)
-
 
     # special points and reference
     special_points = []
@@ -609,7 +609,6 @@ def pareto_plot_comparison(settings, with_reference=True, fig_filename='pendulum
         elif performance_indicator == 'res_stat':
             special_points.append((np.mean(ref_results['res_stat']), ref_timing))
         special_labels.append('ideal')
-
 
     timings = [np.max(1e3*r['timings']) for r in res_list]
     if performance_indicator == 'rel_subopt':
@@ -648,6 +647,7 @@ def pareto_plot_comparison(settings, with_reference=True, fig_filename='pendulum
                        special_labels=special_labels,
                        fig_filename=fig_filename,
                        ncol_legend=ncol_legend,
+                       bbox_to_anchor=(0.42, 0.58),
                        figsize=figsize
                        )
 
@@ -692,8 +692,8 @@ def plot_residuals_over_time(settings, labels, fig_filename=None, scenario=0):
 def main_pareto_plots(settings):
     pareto_plot_comparison(settings, relevant_keys=["algorithm", "nlp_solver_max_iter", "N"],
                            title=None,
-                           ncol_legend = 3,
-                           figsize=(7.4, 4.6),
+                           ncol_legend = 4,
+                           figsize=(7.5, 4.0),
                            with_reference=True,
                            fig_filename='pendulum_pareto_subopt.pdf',
                            performance_indicator='rel_subopt')
